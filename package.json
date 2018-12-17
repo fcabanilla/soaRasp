@@ -1,0 +1,12 @@
+{
+  "name": "restapp",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node_modules/.bin/nodemon startRasp.js"
+  },
+  "dependencies": {
+    "mqtt": "^2.18.8",
+    "nodemon": "^1.18.9"
+  }
+}
