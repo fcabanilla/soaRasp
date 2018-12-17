@@ -85,7 +85,7 @@ function publicarMensajes(){
 					console.log('ok')
 					topic = topicoclient1 + ' > out';
 					console.log({topic1: topic});
-					mqttclient1.publish(topic, 'disp1: ' + datos.toString().replace(/\r?\n/g, ""));
+					mqttclient1.publish(topic, datos.toString().replace(/\r?\n/g, ""));
 				}
 			}
 		);
@@ -98,7 +98,7 @@ function publicarMensajes(){
 					console.log('ok')
 					topic = topicoclient2 + ' > out';
 					console.log({topic2: topic});
-					mqttclient1.publish(topic , 'disp2: ' + datos.toString().replace(/\r?\n/g, ""))
+					mqttclient1.publish(topic , datos.toString().replace(/\r?\n/g, ""))
 				}
 			}
 		);
@@ -123,7 +123,6 @@ function crearClientesMqtt(){
 							console.log('ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient1+ 'EXITOSA!');
 						}
 					})
-				// console.log({estado1: message.toString()});
 				if(topic == topicoclient2)
 					fs.writeFile('/sys/class/gpio/gpio23/value', parseInt(message.toString()), function(error,datos){
 						if(error){
@@ -136,54 +135,7 @@ function crearClientesMqtt(){
 
 			});
 		});
-		// mqttclient1.subscribe(topicoclient2, function(){
-		// 	mqttclient1.on('message', function(topic, message, packet){
-		// 		fs.writeFile('/sys/class/gpio/gpio23/value', parseInt(message.toString()), function(error,datos){
-		// 			if(error){
-		// 				console.log('ERROR EN LA ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient2);
-		// 			}
-		// 			else{
-		// 				console.log('ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient2+ 'EXITOSA!');
-		// 			}
-		// 		})
-		// 		console.log({estado2: message.toString()});
-		//
-		// 	});
-		// });
 	});
-	// mqttclient2=mqtt.connect(Broker_URL, options);
-	// mqttclient2.on('connect', function*(){
-	// 	mqttclient2.subscribe(topicoclient2, function(){
-	// 		mqttclient2.on('message', function(topic, message, packet){
-	// 			fs.writeFile('/sys/class/gpio/gpio23/value', parseInt(message.toString()), function(error,datos){
-	// 				if(error){
-	// 					console.log('ERROR EN LA ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient2);
-	// 				}
-	// 				else{
-	// 					console.log('ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient2+ 'EXITOSA!');
-	// 				}
-	// 			})
-	// 			console.log({estado2: message.toString()});
-	//
-	// 		});
-	// 	});
-	// });
-
-	// mqttclient2=mqtt.connect(Broker_URL, options);
-	// // mqttclient2.on('connect', mqtt_connect2);
-	// mqttclient2.subscribe(topicoclient2, mqtt_subscribe2);
-	// console.log('creo conexion 2');
-	// mqttclient2.on('message', function(topic, message, packet){
-	// 	fs.writeFile('/sys/class/gpio/gpio23/value', parseInt(message.toString()), function(error,datos){
-	// 		if(error){
-	// 			console.log('ERROR EN LA ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient2);
-	// 		}
-	// 		else{
-	// 			console.log('ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient2+ 'EXITOSA!');
-	// 		}
-	// 	})
-	// 	console.log({estado2: message.toString()});
-	// });
 
 }
 
