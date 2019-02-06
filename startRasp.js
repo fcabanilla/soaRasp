@@ -16,6 +16,10 @@ var mqttclient1
 var topicoclient1='colo > Casa del colo > Banio principal > telefono'
 var mqttclient2
 var topicoclient2='colo > Casa del colo > Banio principal > inodoro inteligente'
+var mqttAutomaticFunction1
+var topicoAutomaticFunction1='automaticFunction > 1'
+var mqttAutomaticFunction2
+var topicoAutomaticFunction2='automaticFunction > 2'
 
 
 // function mqtt_connect1() {
@@ -123,7 +127,7 @@ function crearClientesMqtt(){
 							console.log('ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient1+ 'EXITOSA!');
 						}
 					})
-				if(topic == topicoclient2)
+				if(topic == topicoclient2){
 					fs.writeFile('/sys/class/gpio/gpio23/value', parseInt(message.toString()), function(error,datos){
 						if(error){
 							console.log('ERROR EN LA ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient2);
@@ -132,6 +136,16 @@ function crearClientesMqtt(){
 							console.log('ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient2+ 'EXITOSA!');
 						}
 					})
+				}
+				if(topic == topicoAutomaticFunction1){
+					// EJECUTAR SCRIPT FUNCION AUTOMATICA 1
+					// SCRIPT EN PYTHON
+				}
+				if(topic == topicoAutomaticFunction2){
+					// EJECUTAR SCRIPT FUNCION AUTOMATICA 2
+
+					/*SERA ACA VA LA FUNCION DEL SENSOR DE MOVIMIENTO*/
+				}
 
 			});
 		});
@@ -142,7 +156,7 @@ function crearClientesMqtt(){
 setearDispClient1();
 setearDispClient2();
 crearClientesMqtt();
-console.log('pase por aca');
+// console.log('pase por aca');
 publicarMensajes();
 
 
