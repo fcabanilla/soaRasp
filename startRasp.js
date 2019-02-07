@@ -3,6 +3,8 @@
 var fs = require('fs');
 var mqtt = require('mqtt');
 
+var SerialPort = require('serialport')
+var ReadLine = require('@serialport/parser-readline')
 
 //var Broker_URL = 'mqtt://localhost';
 var Broker_URL = 'mqtt://192.168.192.24';
@@ -39,6 +41,17 @@ var topicoAutomaticFunction2='automaticFunction > 2'
 // 	console.log(granted)
 //     console.log("Subscribed to " + topicoclient2);
 // };
+
+var port = new SerialPort('/dev/ttyACM0', {baudRate: 9600})
+var parser = port.pipe(new ReadLine({delimiter: '\n'}))
+port.on('open', function(){
+	console.log('Conectado a Arduino')
+})
+
+port.on('data', function(data){
+	console.log(data)
+})
+
 
 function setearDispClient1(){
 	fs.writeFile("/sys/class/gpio/export", "17", function(error,datos){
