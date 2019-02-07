@@ -16,43 +16,17 @@ var options = {
 const {spawn} = require('child_process')
 
 var mqttclient1
-var topicoclient1='colo > Casa del colo > Banio principal > telefono'
-var mqttclient2
-var topicoclient2='colo > Casa del colo > Banio principal > inodoro inteligente'
+var topicoclient1='soa > Departamento soa > Habitacion principal > Luz Roja'
+var topicoclient2='soa > Departamento soa > Cocina > Luz Verde'
+var topicotmp = 'soa > Departamento soa > Cocina > Sensor de Temperatura'
 var mqttAutomaticFunction1
 var topicoAutomaticFunction1='automaticFunction > 1'
-var mqttAutomaticFunction2
-var topicoAutomaticFunction2='automaticFunction > 2'
-
-
-// function mqtt_connect1() {
-// 	mqttclient1.subscribe(topicoclient1, mqtt_subscribe1);
-// };
-// function mqtt_subscribe1(err, granted) {
-// 	if (err) {return console.log(err);}
-// 	console.log(granted)
-//     console.log("Subscribed to " + topicoclient1);
-// };
-//
-// function mqtt_connect2() {
-// 	mqttclient2.subscribe(topicoclient2, mqtt_subscribe2);
-// };
-// function mqtt_subscribe2(err, granted) {
-// 	if (err) {return console.log(err);}
-// 	console.log(granted)
-//     console.log("Subscribed to " + topicoclient2);
-// };
 
 var port = new SerialPort('/dev/ttyACM0', {baudRate: 9600})
 var parser = port.pipe(new ReadLine({delimiter: '\n'}))
 port.on('open', function(){
 	console.log('Conectado a Arduino')
 })
-
-port.on('data', function(data){
-	console.log("" + data)
-})
-
 
 function setearDispClient1(){
 	fs.writeFile("/sys/class/gpio/export", "17", function(error,datos){
@@ -74,7 +48,7 @@ function setearDispClient1(){
 }
 
 function setearDispClient2(){
-	fs.writeFile("/sys/class/gpio/export", "23", function(error,datos){
+	fs.writeFile("/sys/class/gpio/export", "27", function(error,datos){
 		if(error){
 			console.log('Error en la primera etapa de configuración del dispositivo '+topicoclient2);
 		}
@@ -82,7 +56,7 @@ function setearDispClient2(){
 			console.log('Primera etapa de configuración del dispositivo '+topicoclient2+' EXITOSA!');
 		}
 	})
-	fs.writeFile("/sys/class/gpio/gpio23/direction", 'out', function(error,datos){
+	fs.writeFile("/sys/class/gpio/gpio27/direction", 'out', function(error,datos){
 		if(error){
 			console.log('Error en la Segunda etapa de configuración del dispositivo '+topicoclient2);
 		}
@@ -108,7 +82,7 @@ function publicarMensajes(){
 			}
 		);
 
-		fs.readFile('/sys/class/gpio/gpio23/value',
+		fs.readFile('/sys/class/gpio/gpio27/value',
 			function(error, datos) {
 				if(error){
 					console.log('hubo un error')
@@ -130,6 +104,12 @@ var process;
 function crearClientesMqtt(){
 	mqttclient1=mqtt.connect(Broker_URL, options);
 	mqttclient1.on('connect', function(){
+
+		port.on('data', function (data) {
+			console.log("" + data)
+			mqttclient1.publish(topicotmp, data)
+		})
+
 		mqttclient1.subscribe([topicoclient1, topicoclient2], function(){
 			mqttclient1.on('message', function(topic, message, packet){
 
@@ -145,7 +125,7 @@ function crearClientesMqtt(){
 						}
 					})
 				if(topic == topicoclient2){
-					fs.writeFile('/sys/class/gpio/gpio23/value', parseInt(message.toString()), function(error,datos){
+					fs.writeFile('/sys/class/gpio/gpio27/value', parseInt(message.toString()), function(error,datos){
 						if(error){
 							console.log('ERROR EN LA ESCRITURA DEL NUEVO ESTADO DEL DISPOSITIVO '+topicoclient2);
 						}
@@ -167,12 +147,6 @@ function crearClientesMqtt(){
 							process = null;
 						}
 				}
-				// if(topic == topicoAutomaticFunction2){
-				// 	// EJECUTAR SCRIPT FUNCION AUTOMATICA 2
-
-				// 	/*SERA ACA VA LA FUNCION DEL SENSOR DE MOVIMIENTO*/
-				// }
-
 			});
 		});
 	});
