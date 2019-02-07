@@ -18,9 +18,9 @@ const {spawn} = require('child_process')
 var mqttclient1
 var topicoclient1='soa > Departamento soa > Habitacion principal > Luz Roja'
 var topicoclient2='soa > Departamento soa > Cocina > Luz Verde'
-var topicotmp = 'soa > Departamento soa > Cocina > Sensor de Temperatura'
+var topicotmp = 'soa > Departamento soa > Cocina > Sensor de Temperatura > out'
 var mqttAutomaticFunction1
-var topicoAutomaticFunction1='automaticFunction > 1'
+var topicoAutomaticFunction1='automaticFunction'
 
 var port = new SerialPort('/dev/ttyACM0', {baudRate: 9600})
 var parser = port.pipe(new ReadLine({delimiter: '\n'}))
@@ -50,13 +50,13 @@ function setearDispClient1(){
 function setearDispClient2(){
 	fs.writeFile("/sys/class/gpio/export", "27", function(error,datos){
 		if(error){
-			console.log('Error en la primera etapa de configuración del dispositivo '+topicoclient2);
+			console.log('Error en la primera etapa de configuración del dispositivo '+topicoclient2, error);
 		}
 		else{
 			console.log('Primera etapa de configuración del dispositivo '+topicoclient2+' EXITOSA!');
 			fs.writeFile("/sys/class/gpio/gpio27/direction", 'out', function(error,datos){
 				if(error){
-					console.log('Error en la Segunda etapa de configuración del dispositivo '+topicoclient2);
+					console.log('Error en la Segunda etapa de configuración del dispositivo '+topicoclient2, error);
 				}
 				else{
 					console.log('Segunda etapa de configuración del dispositivo '+topicoclient2+' EXITOSA!');
@@ -95,7 +95,10 @@ function publicarMensajes(){
 			}
 		);
 
-    },10000,"JavaScript");
+	},10000,"JavaScript");
+	port.on('data', function (data) {
+		mqttclient1.publish(topicotmp, data)
+	})
 }
 
 var estaPrendidoSimPres = false;
@@ -104,11 +107,6 @@ var process;
 function crearClientesMqtt(){
 	mqttclient1=mqtt.connect(Broker_URL, options);
 	mqttclient1.on('connect', function(){
-
-		port.on('data', function (data) {
-			console.log("" + data)
-			mqttclient1.publish(topicotmp, data)
-		})
 
 		mqttclient1.subscribe([topicoclient1, topicoclient2], function(){
 			mqttclient1.on('message', function(topic, message, packet){
