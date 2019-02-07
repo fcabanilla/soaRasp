@@ -6,13 +6,14 @@ var mqtt = require('mqtt');
 var SerialPort = require('serialport')
 var ReadLine = require('@serialport/parser-readline')
 
-//var Broker_URL = 'mqtt://localhost';
-var Broker_URL = 'mqtt://192.168.192.24';
+var Broker_URL = 'mqtt://192.168.192.23';
 var options = {
 	clientId: 'MyMQTT',
 	port: 1883,
 	keepalive : 60
 };
+
+const {spawn} = require('child_process')
 
 var mqttclient1
 var topicoclient1='colo > Casa del colo > Banio principal > telefono'
@@ -123,6 +124,9 @@ function publicarMensajes(){
     },10000,"JavaScript");
 }
 
+var estaPrendidoSimPres = false;
+var process;
+
 function crearClientesMqtt(){
 	mqttclient1=mqtt.connect(Broker_URL, options);
 	mqttclient1.on('connect', function(){
@@ -150,15 +154,24 @@ function crearClientesMqtt(){
 						}
 					})
 				}
+				
 				if(topic == topicoAutomaticFunction1){
-					// EJECUTAR SCRIPT FUNCION AUTOMATICA 1
-					// SCRIPT EN PYTHON
+					
+					if(message.toString() == 'on'){
+						estaPrendidoSimPres = true;
+						process = spawn('python test_sim_pres.py')
+					}else{
+						if(estaPrendidoSimPres)
+							process.kill()
+							estaPrendidoSimPres = false;
+							process = null;
+						}
 				}
-				if(topic == topicoAutomaticFunction2){
-					// EJECUTAR SCRIPT FUNCION AUTOMATICA 2
+				// if(topic == topicoAutomaticFunction2){
+				// 	// EJECUTAR SCRIPT FUNCION AUTOMATICA 2
 
-					/*SERA ACA VA LA FUNCION DEL SENSOR DE MOVIMIENTO*/
-				}
+				// 	/*SERA ACA VA LA FUNCION DEL SENSOR DE MOVIMIENTO*/
+				// }
 
 			});
 		});
@@ -169,8 +182,4 @@ function crearClientesMqtt(){
 setearDispClient1();
 setearDispClient2();
 crearClientesMqtt();
-// console.log('pase por aca');
 publicarMensajes();
-
-
-// module.exports = router;
