@@ -49,7 +49,7 @@ port.on('open', function(){
 })
 
 port.on('data', function(data){
-	console.log(data)
+	console.log("" + data)
 })
 
 
