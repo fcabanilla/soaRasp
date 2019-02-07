@@ -35,14 +35,14 @@ function setearDispClient1(){
 		}
 		else{
 			console.log('Primera etapa de configuración del dispositivo '+topicoclient1+' EXITOSA!');
-		}
-	})
-	fs.writeFile("/sys/class/gpio/gpio17/direction", 'out', function(error,datos){
-		if(error){
-			console.log('Error en la Segunda etapa de configuración del dispositivo '+topicoclient1, error);
-		}
-		else{
-			console.log('Segunda etapa de configuración del dispositivo '+topicoclient1+' EXITOSA!');
+			fs.writeFile("/sys/class/gpio/gpio17/direction", 'out', function(error,datos){
+				if(error){
+					console.log('Error en la Segunda etapa de configuración del dispositivo '+topicoclient1, error);
+				}
+				else{
+					console.log('Segunda etapa de configuración del dispositivo '+topicoclient1+' EXITOSA!');
+				}
+			})
 		}
 	})
 }
@@ -54,14 +54,14 @@ function setearDispClient2(){
 		}
 		else{
 			console.log('Primera etapa de configuración del dispositivo '+topicoclient2+' EXITOSA!');
-		}
-	})
-	fs.writeFile("/sys/class/gpio/gpio27/direction", 'out', function(error,datos){
-		if(error){
-			console.log('Error en la Segunda etapa de configuración del dispositivo '+topicoclient2);
-		}
-		else{
-			console.log('Segunda etapa de configuración del dispositivo '+topicoclient2+' EXITOSA!');
+			fs.writeFile("/sys/class/gpio/gpio27/direction", 'out', function(error,datos){
+				if(error){
+					console.log('Error en la Segunda etapa de configuración del dispositivo '+topicoclient2);
+				}
+				else{
+					console.log('Segunda etapa de configuración del dispositivo '+topicoclient2+' EXITOSA!');
+				}
+			})
 		}
 	})
 }
